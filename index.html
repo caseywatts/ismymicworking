@@ -8,43 +8,44 @@
     <button type="button" class="playback">Start Playback</button>
 
     <script>
-      (function () {
-        var recorder;
+      var recorder;
 
-        document.querySelector(".record").addEventListener("click", function () {
-          navigator.mediaDevices.getUserMedia({ video: false, audio: true})
-            .then(function (stream) {
-              recorder = new MediaRecorder(stream);
-              recorder.start();
-            })
-            .catch(function (err) {
-              switch (err.code) {
-                case err.PERMISSION_DENIED:
-                  alert("You denied the request for your microphone.");
-                case err.NOT_SUPPORTED_ERROR:
-                  alert("Your browser does not support streaming your microphone.");
-                case err.MANDATORY_UNSATISFIED_ERROR:
-                  alert("Your device does not have a microphone.");
-                default:
-                  alert("Your device is being weird.");
-              }
-            });
-        });
-
-        document.querySelector(".playback").addEventListener("click", function () {
-          if (!recorder) {
-            return;
+      var onRecord = function() {
+        navigator.mediaDevices.getUserMedia({ video: false, audio: true})
+        .then(function (stream) {
+          recorder = new MediaRecorder(stream);
+          recorder.start();
+        })
+        .catch(function (err) {
+          switch (err.code) {
+            case err.PERMISSION_DENIED:
+            alert("You denied the request for your microphone.");
+            case err.NOT_SUPPORTED_ERROR:
+            alert("Your browser does not support streaming your microphone.");
+            case err.MANDATORY_UNSATISFIED_ERROR:
+            alert("Your device does not have a microphone.");
+            default:
+            alert("Your device is being weird.");
           }
-
-          recorder.stop();
-
-          recorder.ondataavailable = function (evt) {
-            var element = document.createElement("audio");
-            element.controls = true;
-            document.body.appendChild(element);
-            element.src = URL.createObjectURL(evt.data);
-          };
         });
+      };
+
+      var onPlayback = function(evt) {
+        if (!recorder) { return; }
+
+        recorder.stop();
+
+        recorder.ondataavailable = function (evt) {
+          var element = document.createElement("audio");
+          element.controls = true;
+          document.body.appendChild(element);
+          element.src = URL.createObjectURL(evt.data);
+        };
+      };
+
+      (function () {
+        document.querySelector(".record").addEventListener("click", onRecord);
+        document.querySelector(".playback").addEventListener("click", onPlayback);
       })();
     </script>
   </body>
