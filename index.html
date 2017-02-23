@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <button type="button" class="record">Start Recording</button>
+    <button type="button" class="playback">Start Playback</button>
+
+    <script>
+      (function () {
+        var recorder;
+
+        document.querySelector(".record").addEventListener("click", function () {
+          navigator.mediaDevices.getUserMedia({ video: false, audio: true})
+            .then(function (stream) {
+              recorder = new MediaRecorder(stream);
+              recorder.start();
+            })
+            .catch(function (err) {
+              switch (err.code) {
+                case err.PERMISSION_DENIED:
+                  alert("You denied the request for your microphone.");
+                case err.NOT_SUPPORTED_ERROR:
+                  alert("Your browser does not support streaming your microphone.");
+                case err.MANDATORY_UNSATISFIED_ERROR:
+                  alert("Your device does not have a microphone.");
+                default:
+                  alert("Your device is being weird.");
+              }
+            });
+        });
+
+        document.querySelector(".playback").addEventListener("click", function () {
+          if (!recorder) {
+            return;
+          }
+
+          recorder.stop();
+
+          recorder.ondataavailable = function (evt) {
+            var element = document.createElement("audio");
+            element.controls = true;
+            document.body.appendChild(element);
+            element.src = URL.createObjectURL(evt.data);
+          };
+        });
+      })();
+    </script>
+  </body>
+</html>
