@@ -6,6 +6,11 @@
   <body>
     <button type="button" class="record">Click-hold to record, Release to playback</button>
 
+    <script type="text/javascript">
+      if (window.location.protocol != 'https:') {
+        window.location.protocol = 'https';
+      }
+    </script>
     <script>
       var recorder;
 
