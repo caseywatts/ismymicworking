@@ -7,7 +7,9 @@
   <body>
     <div class="bg-blue vw-100 vh-100 center tc pa3">
       <h1>Is my mic working?</h1>
-      <a href="#" id="record" class="link ma4 dib pa3 blue bg-light-gray dim">Click-hold to record, Release to playback</button>
+      <p>This will record for 3 seconds, and then play back for 3 seconds.</p>
+      <div id="recordingState" class="white ba bw-1 pa4"></div>
+      <a href="#" id="record" class="link ma4 dib pa3 blue bg-light-gray hover-bg-white">Click-hold to record, Release to playback</button>
     </div>
 
 
@@ -20,10 +22,12 @@
       var recorder;
 
       var onRecord = function () {
+        document.getElementById('recordingState').innerHTML = 'Recording';
         navigator.mediaDevices.getUserMedia({ video: false, audio: true })
         .then(function (stream) {
           recorder = new MediaRecorder(stream);
           recorder.start();
+          setTimeout(onRecordStop, 3000);
         })
         .catch(function (err) {
           switch (err.code) {
@@ -39,21 +43,26 @@
         });
       };
 
+      var onDone = function () {
+        document.getElementById('recordingState').innerHTML = 'Done';
+      };
+
       var onRecordStop = function () {
         if (!recorder) { return; }
 
+        document.getElementById('recordingState').innerHTML = 'Playing Back';
         recorder.stop();
         recorder.ondataavailable = function (evt) {
           var element = document.createElement('audio');
           element.autoplay = true;
           document.body.appendChild(element);
           element.src = URL.createObjectURL(evt.data);
+          setTimeout(onDone, 3000);
         };
       };
 
       (function () {
         document.querySelector('#record').addEventListener('mousedown', onRecord);
-        document.querySelector('#record').addEventListener('mouseup', onRecordStop);
       })();
     </script>
   </body>
