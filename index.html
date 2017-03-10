@@ -7,9 +7,9 @@
   <body class="ma0 pa0 bg-blue vw-100 vh-100">
     <div class="center tc ma0 pa0">
       <h1 class="pa4">Is my mic working?</h1>
-      <p>This will record for 3 seconds, and then play back for 3 seconds.</p>
+      <p>This will record for 1.5 seconds, and then play back for 1.5 seconds.</p>
       <div id="recordingState" class="white ba bw-1 pa4"></div>
-      <a href="#" id="record" class="link ma4 dib pa3 blue bg-light-gray hover-bg-white">Click-hold to record, Release to playback</a>
+      <a href="#" id="record" class="link ma4 dib pa3 blue bg-light-gray hover-bg-white br-100 w4 h4 center">Start</a>
       <div style="position:absolute;bottom:0px;" class="w-100 pa3 bg-light-gray">made by @kyloma and @adunkman</div>
     </div>
 
@@ -28,7 +28,7 @@
         .then(function (stream) {
           recorder = new MediaRecorder(stream);
           recorder.start();
-          setTimeout(onRecordStop, 3000);
+          setTimeout(onRecordStop, 1500);
         })
         .catch(function (err) {
           switch (err.code) {
@@ -58,7 +58,7 @@
           element.autoplay = true;
           document.body.appendChild(element);
           element.src = URL.createObjectURL(evt.data);
-          setTimeout(onDone, 3000);
+          setTimeout(onDone, 1500);
         };
       };
 
